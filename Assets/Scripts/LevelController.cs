@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Dreamteck.Splines;
 
 public class LevelController : MonoBehaviour
 {
@@ -91,6 +92,7 @@ public class LevelController : MonoBehaviour
         gameActive = true;
         levelStartMenu.gameObject.SetActive(false);
         inGameMenu.gameObject.SetActive(true);
+        Debug.Log("start");
     }
 
     public void Restart()
@@ -104,7 +106,21 @@ public class LevelController : MonoBehaviour
     {
         gameActive = false;
         inGameMenu.SetActive(false);
+        failGameOverMenu.SetActive(true);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<SplineFollower>().followSpeed = 0;
+        //GameObject.FindGameObjectWithTag("AI").GetComponent<Rigidbody>().velocity = Vector3.zero;
 
+    }
+
+    public void WinGameOver()
+    {
+        
+        gameActive = false;
+        inGameMenu.SetActive(false);
+        winGameOverMenu.SetActive(true);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<SplineFollower>().followSpeed = 0;
+        //GameObject.FindGameObjectWithTag("AI").GetComponent<Rigidbody>().velocity = Vector3.zero;
+        Debug.Log("win");
     }
 
 }
