@@ -19,7 +19,9 @@ public class EventController : MonoBehaviour
     public bool playerFinished;
     public bool acceleration;
     public bool stop;
-    public Vector3 spawnPoint;
+    public Vector3 endPoint;
+    public Vector3 finishPoint;
+    public GameObject finish;
     public SplineComputer playerSpline1;
     public float splineLenght;
     public double travel;
@@ -36,6 +38,7 @@ public class EventController : MonoBehaviour
         acceleration = true;
         stop = false;
         splineLenght = (float)playerSpline1.CalculateLength();
+        
         
     }
 
@@ -112,20 +115,15 @@ public class EventController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("StartPedestrian"))
-        {
-            pedestrianSpawner1.SetActive(true);
-            pedestrianSpawner2.SetActive(true);
-        }
+        
 
         if (other.CompareTag("TrainTrigger"))
         {
             if (!TrainSpawner.Current.trainSpawned)
             {
                 TrainSpawner.Current.InstantiateTrain();
-                railRoadGate1.transform.DOLocalRotate(new Vector3(0, -90, 90), 1f, RotateMode.Fast).SetEase(Ease.Linear).SetDelay(1.5f);
-                railRoadGate2.transform.DOLocalRotate(new Vector3(0, -90, 90), 1f, RotateMode.Fast).SetEase(Ease.Linear).SetDelay(1.5f);
-                StartCoroutine(RailRoadGates());
+               
+                
             }
             
         }
@@ -133,12 +131,13 @@ public class EventController : MonoBehaviour
         if (other.CompareTag("Train"))
         {
             crashed = true;
-
+            Debug.Log("anim");
             DisableCar();
-
-            InvokeRepeating("TurnOffMeshes", 0.2f, 0.2f);
-            InvokeRepeating("TurnOnMeshes", 0.3f, 0.3f);
-
+            GetComponent<BoxCollider>().enabled = false;
+            //InvokeRepeating("TurnOffMeshes", 0.2f, 0.2f);
+            //InvokeRepeating("TurnOnMeshes", 0.25f, 0.25f);
+            transform.DOScale(0, 0.1f).SetDelay(0.2f).SetEase(Ease.InOutSine).SetLoops(6, LoopType.Yoyo);
+            MMVibrationManager.Haptic(HapticTypes.HeavyImpact);
             StartCoroutine(TransformCar());
 
             //StartCoroutine(Crash());
@@ -149,7 +148,7 @@ public class EventController : MonoBehaviour
         {
             playerFinished = true;
             GetComponent<SplineFollower>().enabled = false;
-            Camera.main.GetComponent<CameraFollower>().enabled = false;
+            Camera.main.GetComponent<BallCamera>().enabled = false;
             FinishAnim();
             
             
@@ -227,12 +226,12 @@ public class EventController : MonoBehaviour
         {
             
             float timePassed = 0;
-            while (timePassed < 1f)
+            while (timePassed < 1.2f)
             {
                 timePassed += Time.deltaTime;
                 GetComponent<SplineFollower>().direction = Spline.Direction.Backward;
                 GetComponent<SplineFollower>().follow = true;
-                GetComponent<SplineFollower>().followSpeed = 7;
+                GetComponent<SplineFollower>().followSpeed = 10;
 
 
                 yield return null;
@@ -245,11 +244,14 @@ public class EventController : MonoBehaviour
             GetComponent<SplineFollower>().followSpeed = 0f;
             transform.GetChild(1).transform.gameObject.SetActive(true);
             transform.GetChild(2).transform.gameObject.SetActive(true);
+            GetComponent<BoxCollider>().enabled = true;
             crashed = false;
-            CancelInvoke("TurnOffMeshes");
 
-            yield return new WaitForSecondsRealtime(0.5f);
-            CancelInvoke("TurnOnMeshes");
+            //yield return new WaitForSecondsRealtime(0.4f);
+            //GetComponent<BoxCollider>().enabled = true;
+            //crashed = false;
+
+            
 
         }
 
@@ -260,11 +262,13 @@ public class EventController : MonoBehaviour
     void FinishAnim()
     {
         Sequence seq = DOTween.Sequence();
-        transform.DOLocalRotate(new Vector3(0, -240, 0), 0.5f, RotateMode.Fast).SetEase(Ease.OutQuad);
-        transform.DOLocalMove(new Vector3(-800, 0, 980), 0.5f).SetEase(Ease.OutQuad);
-        
-        seq.Append(Camera.main.transform.DOLocalMove(new Vector3(-778.43f, 12.41f, 978f), 1f).SetEase(Ease.OutQuad));
-        seq.Join(Camera.main.transform.DOLocalRotate(new Vector3(21.41f, -90f, 0), 0.5f, RotateMode.Fast).SetEase(Ease.OutQuad).OnComplete(()=>FinishMenu()));
+        transform.DOLocalRotate(new Vector3(0, 120, 0), 0.5f, RotateMode.Fast).SetEase(Ease.OutQuad);
+        transform.DOLocalMove(new Vector3((finish.transform.position.x - 62f), 0, (finish.transform.position.z - 9f)), 0.5f).SetEase(Ease.OutQuad);
+
+        //seq.Append(Camera.main.transform.DOLocalMove(new Vector3(120f, 13f, 172.5f), 1f).SetEase(Ease.OutQuad));
+        seq.Append(Camera.main.transform.DOLocalMove(new Vector3((finish.transform.position.x - 4.83f), (transform.position.y + 11.57f), (transform.position.z - 7.96f)), 1f).SetEase(Ease.OutQuad));
+        seq.Join(Camera.main.transform.DOLocalRotate(new Vector3(11.6f, -90, 0f), 0.5f, RotateMode.Fast).SetEase(Ease.OutQuad).OnComplete(() => FinishMenu()));
+        //seq.Join(Camera.main.transform.DOLocalRotate(new Vector3(11.6f, -90f, 0f), 0.5f, RotateMode.Fast).SetEase(Ease.OutQuad).OnComplete(()=>FinishMenu()));
     }
 
     void FinishMenu()
@@ -281,31 +285,9 @@ public class EventController : MonoBehaviour
         
     }
 
-    IEnumerator RailRoadGates()
-    {
-        yield return new WaitForSecondsRealtime(6f);
+   
 
-        railRoadGate1.transform.DOLocalRotate(new Vector3(0, -90, 160), 1f, RotateMode.Fast).SetEase(Ease.Linear);
-        railRoadGate2.transform.DOLocalRotate(new Vector3(0, -90, 160), 1f, RotateMode.Fast).SetEase(Ease.Linear);
-    }
-
-    void TurnOffMeshes()
-    {
-        transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-        transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>().enabled = false;
-        transform.GetChild(0).GetChild(2).GetComponent<MeshRenderer>().enabled = false;
-        transform.GetChild(0).GetChild(3).GetComponent<MeshRenderer>().enabled = false;
-        transform.GetChild(0).GetChild(4).GetComponent<MeshRenderer>().enabled = false;
-    }
-
-    void TurnOnMeshes()
-    {
-        transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(1).GetComponent<MeshRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(2).GetComponent<MeshRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(3).GetComponent<MeshRenderer>().enabled = true;
-        transform.GetChild(0).GetChild(4).GetComponent<MeshRenderer>().enabled = true;
-    }
+    
 
    IEnumerator RiseUpCar()
    {
@@ -315,12 +297,7 @@ public class EventController : MonoBehaviour
        
    }
 
-    IEnumerator GetDownCar()
-    {
-        stop = false;
-
-        yield return new WaitForSecondsRealtime(0.25f);
-    }
+    
 
 
 

@@ -9,16 +9,16 @@ public class UpgradeSystem : MonoBehaviour
     public static UpgradeSystem Current;
 
     public Button speedUpgradeButton;
-    public Button brakeUpgradeButton;
+    
     public Button incomeUpgradeButton;
 
     public TextMeshProUGUI speedUpgradeLevelText, speedUpgradePriceText;
-    public TextMeshProUGUI brakeUpgradeLevelText, brakeUpgradePriceText;
+    //public TextMeshProUGUI earnedMoneyText;
     public TextMeshProUGUI incomeUpgradeLevelText, incomeUpgradePriceText;
     public TextMeshProUGUI moneyText;
 
     public float speedUpgradePrice;
-    public float brakeUpgradePrice;
+    
     public float incomeUpgradePrice;
 
     public int maxSpeed;
@@ -35,8 +35,12 @@ public class UpgradeSystem : MonoBehaviour
         CheckPrefs();
         CheckButtons();
         //PlayerPrefs.SetInt("Money", 1000);
-        
-        if(PlayerPrefs.GetInt("MaxSpeed") <= 0)
+        //PlayerPrefs.SetInt("SpeedUpgradeLevel", 1);
+        //PlayerPrefs.SetInt("IncomeUpgradeLevel", 1);
+
+        //PlayerPrefs.SetInt("EarnedMoney", 50);
+
+        if (PlayerPrefs.GetInt("MaxSpeed") <= 0)
         {
             PlayerPrefs.SetInt("MaxSpeed", 150);
         }
@@ -47,7 +51,7 @@ public class UpgradeSystem : MonoBehaviour
 
         if(PlayerPrefs.GetInt("AIMaxSpeed") <= 0)
         {
-            PlayerPrefs.SetInt("AIMaxSpeed", 140);
+            PlayerPrefs.SetInt("AIMaxSpeed", 130);
         }
         else
         {
@@ -75,14 +79,19 @@ public class UpgradeSystem : MonoBehaviour
             PlayerPrefs.SetInt("SpeedUpgradePrice", 50);
         }
 
-        if(PlayerPrefs.GetInt("BrakeUpgradePrice") <= 0)
-        {
-            PlayerPrefs.SetInt("BrakeUpgradePrice", 50);
-        }
 
         if(PlayerPrefs.GetInt("IncomeUpgradePrice") <= 0)
         {
             PlayerPrefs.SetInt("IncomeUpgradePrice", 50);
+        }
+
+        if(PlayerPrefs.GetInt("EarnedMoney") <= 0)
+        {
+            PlayerPrefs.SetInt("EarnedMoney", 50);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("EarnedMoney", PlayerPrefs.GetInt("EarnedMoney"));
         }
 
 
@@ -100,14 +109,7 @@ public class UpgradeSystem : MonoBehaviour
             speedUpgradeButton.interactable = false;
         }
 
-        if(PlayerPrefs.GetInt("Money") >= PlayerPrefs.GetInt("BrakeUpgradePrice"))
-        {
-            brakeUpgradeButton.interactable = true;
-        }
-        else
-        {
-            brakeUpgradeButton.interactable = false;
-        }
+       
 
         if(PlayerPrefs.GetInt("Money") >= PlayerPrefs.GetInt("IncomeUpgradePrice"))
         {
@@ -119,12 +121,12 @@ public class UpgradeSystem : MonoBehaviour
         }
 
         speedUpgradePriceText.text = "$ " + PlayerPrefs.GetInt("SpeedUpgradePrice");
-        brakeUpgradePriceText.text = "$ " + PlayerPrefs.GetInt("BrakeUpgradePrice");
+        
         incomeUpgradePriceText.text = "$ " + PlayerPrefs.GetInt("IncomeUpgradePrice");
 
-        speedUpgradeLevelText.text = "lvl " + PlayerPrefs.GetInt("SpeedUpgradeLevel");
-        brakeUpgradeLevelText.text = "lvl " + PlayerPrefs.GetInt("BrakeUpgradeLevel");
-        incomeUpgradeLevelText.text = "lvl " + PlayerPrefs.GetInt("IncomeUpgradeLevel");
+        speedUpgradeLevelText.text = PlayerPrefs.GetInt("SpeedUpgradeLevel").ToString();
+        
+        incomeUpgradeLevelText.text = PlayerPrefs.GetInt("IncomeUpgradeLevel").ToString();
 
         moneyText.text = "$ " + PlayerPrefs.GetInt("Money");
 
@@ -138,7 +140,7 @@ public class UpgradeSystem : MonoBehaviour
             PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") - PlayerPrefs.GetInt("SpeedUpgradePrice"));
             PlayerPrefs.SetInt("SpeedUpgradeLevel", PlayerPrefs.GetInt("SpeedUpgradeLevel") + 1);
             PlayerPrefs.SetInt("SpeedUpgradePrice", PlayerPrefs.GetInt("SpeedUpgradePrice") + 50);
-            PlayerPrefs.SetInt("MaxSpeed", PlayerPrefs.GetInt("MaxSpeed") + 5);
+            PlayerPrefs.SetInt("MaxSpeed", PlayerPrefs.GetInt("MaxSpeed") + 10);
             PlayerPrefs.SetInt("AIMaxSpeed", PlayerPrefs.GetInt("AIMaxSpeed") + 5);
             
         }
@@ -146,24 +148,19 @@ public class UpgradeSystem : MonoBehaviour
         CheckButtons();
     }
 
-    public void BuyBrakeUpgrade()
-    {
-        if(PlayerPrefs.GetInt("Money") >= PlayerPrefs.GetInt("BrakeUpgradePrice"))
-        {
-            PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") - PlayerPrefs.GetInt("BrakeUpgradePrice"));
-            PlayerPrefs.SetInt("BrakeUpgradeLevel", PlayerPrefs.GetInt("BrakeUpgradeLevel") + 1);
-            PlayerPrefs.SetInt("BrakeUpgradePrice", PlayerPrefs.GetInt("BrakeUpgradePrice") + 50);
-        }
-        CheckButtons();
-    }
+    
 
     public void BuyIncomeUpgrade()
     {
         if(PlayerPrefs.GetInt("Money") >= PlayerPrefs.GetInt("IncomeUpgradePrice"))
         {
+            int randomEarnedMoney = Random.Range(50, 101);
+
             PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") - PlayerPrefs.GetInt("IncomeUpgradePrice"));
             PlayerPrefs.SetInt("IncomeUpgradeLevel", PlayerPrefs.GetInt("IncomeUpgradeLevel") + 1);
             PlayerPrefs.SetInt("IncomeUpgradePrice", PlayerPrefs.GetInt("IncomeUpgradePrice") + 50);
+            //int randomEarnedMoney = Random.Range(50, 101);
+            PlayerPrefs.SetInt("EarnedMoney", PlayerPrefs.GetInt("EarnedMoney") + 50);
         }
 
         CheckButtons();

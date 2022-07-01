@@ -28,13 +28,13 @@ public class TrafficController : MonoBehaviour
         
 
 
-        transform.Translate(Vector3.forward * 10 * Time.deltaTime);
+        transform.Translate(Vector3.forward * 60 * Time.deltaTime);
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        /*if (other.CompareTag("Player"))
         {
             player.GetComponent<SplineFollower>().follow = false;
             player.GetComponent<SplineFollower>().followSpeed = 0f;
@@ -50,7 +50,7 @@ public class TrafficController : MonoBehaviour
 
             StartCoroutine(SetActiveCar());
 
-        }
+        }*/
     }
 
 
@@ -74,7 +74,7 @@ public class TrafficController : MonoBehaviour
 
     IEnumerator DisAbleTrafficCar()
     {
-        yield return new WaitForSecondsRealtime(15f);
+        yield return new WaitForSecondsRealtime(30f);
 
         gameObject.SetActive(false);
     }

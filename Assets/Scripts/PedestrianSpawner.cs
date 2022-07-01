@@ -6,6 +6,8 @@ public class PedestrianSpawner : MonoBehaviour
 {
     public static PedestrianSpawner Current;
 
+    public List<GameObject> pedestrians;
+
     public GameObject pedestrian;
     
     
@@ -13,6 +15,7 @@ public class PedestrianSpawner : MonoBehaviour
     {
         Current = this;
         StartCoroutine(SpawnPedestrian());
+        pedestrians = new List<GameObject>(Resources.LoadAll<GameObject>("Prefabs"));
     }
 
     
@@ -28,9 +31,10 @@ public class PedestrianSpawner : MonoBehaviour
         {
             float waitTime = Random.Range(3, 8);
             int xPos = Random.Range(-4, 5);
+            int randomPedestrian = Random.Range(0, pedestrians.Count - 1);
             yield return new WaitForSecondsRealtime(waitTime);
         
-            Instantiate(pedestrian, new Vector3(gameObject.transform.position.x + xPos,gameObject.transform.position.y, gameObject.transform.position.z), gameObject.transform.rotation);
+            Instantiate(pedestrians[randomPedestrian], new Vector3(gameObject.transform.position.x + xPos,gameObject.transform.position.y, gameObject.transform.position.z), gameObject.transform.rotation);
             
             
         }

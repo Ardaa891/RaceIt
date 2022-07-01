@@ -38,10 +38,7 @@ public class HealthController : MonoBehaviour
             hitCount++;
         }
 
-        if (other.CompareTag("TrafficCar"))
-        {
-            hitCount++;
-        }
+        
     }
 
 

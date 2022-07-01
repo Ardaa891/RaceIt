@@ -31,7 +31,7 @@ public class AIController : MonoBehaviour
     {
         if (LevelController.Current.gameActive)
         {
-            GetComponent<SplineFollower>().followSpeed+=5;
+            GetComponent<SplineFollower>().followSpeed+=300*Time.deltaTime;
             GetComponent<SplineFollower>().follow = true;
             transform.GetChild(0).GetChild(1).GetComponent<Animator>().SetBool("Holding", true);
             transform.GetChild(0).GetChild(2).GetComponent<Animator>().SetBool("Holding", true);
@@ -44,13 +44,14 @@ public class AIController : MonoBehaviour
             }
 
 
-            if (GetComponent<SplineFollower>().followSpeed <= 0)
+            if (GetComponent<SplineFollower>().followSpeed <= 0 || !GetComponent<SplineFollower>().follow) 
             {
+                //transform.GetComponentInChildren<Animator>().enabled = false;
 
-                transform.GetChild(0).GetChild(1).GetComponent<Animator>().SetBool("Holding", false);
-                transform.GetChild(0).GetChild(2).GetComponent<Animator>().SetBool("Holding", false);
-                transform.GetChild(0).GetChild(3).GetComponent<Animator>().SetBool("Holding", false);
-                transform.GetChild(0).GetChild(4).GetComponent<Animator>().SetBool("Holding", false);
+                transform.GetChild(0).GetChild(1).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(2).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(3).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(4).GetComponent<Animator>().enabled = false;
 
             }
 
@@ -70,7 +71,7 @@ public class AIController : MonoBehaviour
 
 
 
-            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 30f))
+            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 75f))
             {
                 if (trafficCar.collider.gameObject.CompareTag("TrafficCar"))
                 {
@@ -85,9 +86,10 @@ public class AIController : MonoBehaviour
             {
                 trafficHit = false;
                 StartCoroutine(IncreaseSpeed());
+                Debug.Log("go");
             }
 
-            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 75f))
+            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 50f))
             {
                 if (trafficCar.collider.gameObject.CompareTag("Train"))
                 {
@@ -100,6 +102,7 @@ public class AIController : MonoBehaviour
             {
                 trafficHit = false;
                 StartCoroutine(IncreaseSpeed());
+                Debug.Log("go");
             }
 
 
@@ -142,11 +145,15 @@ public class AIController : MonoBehaviour
             {
                 yield return new WaitForSecondsRealtime(0.001f);
 
-                GetComponent<SplineFollower>().followSpeed -= 5f;
+                GetComponent<SplineFollower>().followSpeed -= 500f * Time.deltaTime;
                 if (GetComponent<SplineFollower>().followSpeed <= 0)
                 {
                     GetComponent<SplineFollower>().followSpeed = 0;
-                }
+                transform.GetChild(0).GetChild(1).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(2).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(3).GetComponent<Animator>().enabled = false;
+                transform.GetChild(0).GetChild(4).GetComponent<Animator>().enabled = false;
+            }
             }
         }
 
@@ -156,7 +163,7 @@ public class AIController : MonoBehaviour
             {
                 yield return new WaitForSecondsRealtime(0.001f);
 
-                GetComponent<SplineFollower>().followSpeed += 5;
+                GetComponent<SplineFollower>().followSpeed += 300*Time.deltaTime;
 
                 if (GetComponent<SplineFollower>().followSpeed >= PlayerPrefs.GetInt("AIMaxSpeed"))
                 {
@@ -214,19 +221,24 @@ public class AIController : MonoBehaviour
                 {
                     TrainSpawner.Current.InstantiateTrain();
 
-                    railRoadGate1.transform.DOLocalRotate(new Vector3(0, -90, 90), 1f, RotateMode.Fast).SetEase(Ease.Linear).SetDelay(1.5f);
-                    railRoadGate2.transform.DOLocalRotate(new Vector3(0, -90, 90), 1f, RotateMode.Fast).SetEase(Ease.Linear).SetDelay(1.5f);
-                    StartCoroutine(RailRoadGates());
+                    
                 }
             }
 
             if (other.CompareTag("FinishTrigger"))
             {
-                Debug.Log("AIFinished");
+            GetComponent<SplineFollower>().follow = false;
+            GetComponent<SplineFollower>().followSpeed = 0;
+            transform.GetChild(0).GetChild(1).GetComponent<Animator>().enabled = false;
+            transform.GetChild(0).GetChild(2).GetComponent<Animator>().enabled = false;
+            transform.GetChild(0).GetChild(3).GetComponent<Animator>().enabled = false;
+            transform.GetChild(0).GetChild(4).GetComponent<Animator>().enabled = false;
+            Debug.Log("AIFinished");
 
                     if (!EventController.Current.playerFinished)
                     {
                       aiFinished = true;
+                
                     }
 
 
@@ -236,11 +248,5 @@ public class AIController : MonoBehaviour
         }
 
 
-        IEnumerator RailRoadGates()
-        {
-            yield return new WaitForSecondsRealtime(6.5f);
-
-            railRoadGate1.transform.DOLocalRotate(new Vector3(0, -90, 160), 1f, RotateMode.Fast).SetEase(Ease.Linear);
-            railRoadGate2.transform.DOLocalRotate(new Vector3(0, -90, 9 - 160), 1f, RotateMode.Fast).SetEase(Ease.Linear);
-        }
+       
     } 

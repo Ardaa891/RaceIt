@@ -7,7 +7,7 @@ using DG.Tweening;
 public class CanvasVisualizer : MonoBehaviour
 {
     public Button speedUpgradeButton;
-    public Button brakeUpgradeButton;
+    
     public Button incomeUpgradeButton;
 
 
@@ -31,24 +31,18 @@ public class CanvasVisualizer : MonoBehaviour
 
             if (speedUpgradeButton.interactable)
             {
-                speedUpgradeButton.transform.DOScale(new Vector3(2.2f, 17.6f, 1), 0.1f).SetEase(Ease.Linear).SetLoops(2, LoopType.Yoyo);
+                speedUpgradeButton.transform.DOScale(new Vector3(1.2f, 1.2f, 1), 0.1f).SetEase(Ease.Linear).SetLoops(2, LoopType.Yoyo);
             }
 
             
 
-            yield return new WaitForSecondsRealtime(1f);
-
-            if (brakeUpgradeButton.interactable)
-            {
-                brakeUpgradeButton.transform.DOScale(new Vector3(2.2f, 17.6f, 1), 0.1f).SetEase(Ease.Linear).SetLoops(2, LoopType.Yoyo);
-            }
             
 
             yield return new WaitForSecondsRealtime(1f);
 
             if (incomeUpgradeButton.interactable)
             {
-                incomeUpgradeButton.transform.DOScale(new Vector3(2.2f, 17.6f, 1), 0.1f).SetEase(Ease.Linear).SetLoops(2, LoopType.Yoyo);
+                incomeUpgradeButton.transform.DOScale(new Vector3(1.2f, 1.2f, 1), 0.1f).SetEase(Ease.Linear).SetLoops(2, LoopType.Yoyo);
             }
             
         }

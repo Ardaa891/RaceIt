@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using Dreamteck.Splines;
+using MoreMountains.NiceVibrations;
+using ElephantSDK;
 
 public class LevelController : MonoBehaviour
 {
@@ -13,6 +15,9 @@ public class LevelController : MonoBehaviour
     public GameObject winGameOverMenu, failGameOverMenu, levelStartMenu, inGameMenu;
     public bool gameActive = false;
     public bool levelEnd = false;
+
+    public TextMeshProUGUI earnedMoneyText;
+    public float earnedMoney;
 
 
     [Space]
@@ -24,7 +29,7 @@ public class LevelController : MonoBehaviour
     {
         Current = this;
         Screen.sleepTimeout = 0;
-
+        
         if (isTesting == false)
         {
 
@@ -85,10 +90,14 @@ public class LevelController : MonoBehaviour
 
         }
 
+        PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money") + PlayerPrefs.GetInt("EarnedMoney"));
+        
+
     }
 
     public void StartLevel()
     {
+        Elephant.LevelStarted(PlayerPrefs.GetInt("level") + 1);
         gameActive = true;
         levelStartMenu.gameObject.SetActive(false);
         inGameMenu.gameObject.SetActive(true);
@@ -104,23 +113,28 @@ public class LevelController : MonoBehaviour
 
     public void GameOver()
     {
+        Elephant.LevelFailed(PlayerPrefs.GetInt("level") + 1);
         gameActive = false;
         inGameMenu.SetActive(false);
         failGameOverMenu.SetActive(true);
         GameObject.FindGameObjectWithTag("Player").GetComponent<SplineFollower>().followSpeed = 0;
         //GameObject.FindGameObjectWithTag("AI").GetComponent<Rigidbody>().velocity = Vector3.zero;
+        earnedMoneyText.text = "$ " + "0";
+        MMVibrationManager.Haptic(HapticTypes.Failure);
 
     }
 
     public void WinGameOver()
     {
-        
+        Elephant.LevelCompleted(PlayerPrefs.GetInt("level") + 1);
         gameActive = false;
         inGameMenu.SetActive(false);
         winGameOverMenu.SetActive(true);
         GameObject.FindGameObjectWithTag("Player").GetComponent<SplineFollower>().followSpeed = 0;
         //GameObject.FindGameObjectWithTag("AI").GetComponent<Rigidbody>().velocity = Vector3.zero;
         Debug.Log("win");
+        MMVibrationManager.Haptic(HapticTypes.Success);
+        earnedMoneyText.text = "$ " + PlayerPrefs.GetInt("EarnedMoney");
     }
 
 }

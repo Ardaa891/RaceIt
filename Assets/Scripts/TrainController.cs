@@ -20,7 +20,7 @@ public class TrainController : MonoBehaviour
     
     void Update()
     {
-        transform.Translate(Vector3.right * 180 *Time.deltaTime);
+        transform.Translate(Vector3.right * 200 *Time.deltaTime);
     }
 
     IEnumerator DisableTrain()

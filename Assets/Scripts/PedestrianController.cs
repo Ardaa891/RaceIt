@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.NiceVibrations;
 
 public class PedestrianController : MonoBehaviour
 {
@@ -74,7 +75,7 @@ public class PedestrianController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             TurnOnRagdoll();
-            
+            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
             
         }
     }
