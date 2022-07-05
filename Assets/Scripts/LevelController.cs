@@ -7,6 +7,7 @@ using TMPro;
 using Dreamteck.Splines;
 using MoreMountains.NiceVibrations;
 using ElephantSDK;
+using UnityEngine.EventSystems;
 
 public class LevelController : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class LevelController : MonoBehaviour
     public GameObject winGameOverMenu, failGameOverMenu, levelStartMenu, inGameMenu;
     public bool gameActive = false;
     public bool levelEnd = false;
-
+    public bool startPressed;
     public TextMeshProUGUI earnedMoneyText;
     public float earnedMoney;
 
@@ -51,6 +52,16 @@ public class LevelController : MonoBehaviour
             CurrentLevel.SetActive(true);
         }
     }
+
+    private void Update()
+    {
+        if(Input.GetMouseButton(0) && !gameActive && EventSystem.current.currentSelectedGameObject == null)
+        {
+            StartLevel();
+        }
+    }
+
+
 
     public void NextLevel()
     {
@@ -137,4 +148,7 @@ public class LevelController : MonoBehaviour
         earnedMoneyText.text = "$ " + PlayerPrefs.GetInt("EarnedMoney");
     }
 
+  
+
+  
 }

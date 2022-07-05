@@ -51,7 +51,7 @@ public class UpgradeSystem : MonoBehaviour
 
         if(PlayerPrefs.GetInt("AIMaxSpeed") <= 0)
         {
-            PlayerPrefs.SetInt("AIMaxSpeed", 130);
+            PlayerPrefs.SetInt("AIMaxSpeed", 140);
         }
         else
         {
@@ -141,7 +141,7 @@ public class UpgradeSystem : MonoBehaviour
             PlayerPrefs.SetInt("SpeedUpgradeLevel", PlayerPrefs.GetInt("SpeedUpgradeLevel") + 1);
             PlayerPrefs.SetInt("SpeedUpgradePrice", PlayerPrefs.GetInt("SpeedUpgradePrice") + 50);
             PlayerPrefs.SetInt("MaxSpeed", PlayerPrefs.GetInt("MaxSpeed") + 10);
-            PlayerPrefs.SetInt("AIMaxSpeed", PlayerPrefs.GetInt("AIMaxSpeed") + 5);
+            PlayerPrefs.SetInt("AIMaxSpeed", PlayerPrefs.GetInt("AIMaxSpeed") + 7);
             
         }
 
