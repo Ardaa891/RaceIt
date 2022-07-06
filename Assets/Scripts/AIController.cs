@@ -55,7 +55,7 @@ public class AIController : MonoBehaviour
 
             }
 
-            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 100f))
+            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 125f))
             {
                 if (trafficCar.collider.gameObject.CompareTag("Pedestrian"))
                 {
@@ -71,7 +71,7 @@ public class AIController : MonoBehaviour
 
 
 
-            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 75f))
+            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 100f))
             {
                 if (trafficCar.collider.gameObject.CompareTag("TrafficCar"))
                 {
@@ -89,7 +89,7 @@ public class AIController : MonoBehaviour
                 Debug.Log("go");
             }
 
-            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 50f))
+            if (Physics.Raycast(transform.position, transform.forward, out trafficCar, 75f))
             {
                 if (trafficCar.collider.gameObject.CompareTag("Train"))
                 {
@@ -145,7 +145,7 @@ public class AIController : MonoBehaviour
             {
                 yield return new WaitForSecondsRealtime(0.001f);
 
-                GetComponent<SplineFollower>().followSpeed -= 500f * Time.deltaTime;
+                GetComponent<SplineFollower>().followSpeed -= 250f * Time.deltaTime;
                 if (GetComponent<SplineFollower>().followSpeed <= 0)
                 {
                     GetComponent<SplineFollower>().followSpeed = 0;
